@@ -9,13 +9,13 @@ import org.springframework.core.type.AnnotationMetadata;
 /**
  * @author Jamin
  * @date 2020/4/5 10:55
- * @deprecated 通过ImportBeanDefinitionRegistrar接口添加组件
+ * 通过ImportBeanDefinitionRegistrar接口添加组件
  */
 public class ImportBeanDefinitionRegistrarImpl implements ImportBeanDefinitionRegistrar {
-  @Override
-  public void registerBeanDefinitions(
-      AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
-    RootBeanDefinition rootBeanDefinition = new RootBeanDefinition(Dog.class);
-    beanDefinitionRegistry.registerBeanDefinition("dog", rootBeanDefinition);
-  }
+    @Override
+    public void registerBeanDefinitions(
+            AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
+        RootBeanDefinition rootBeanDefinition = new RootBeanDefinition(Dog.class);
+        beanDefinitionRegistry.registerBeanDefinition("dog", rootBeanDefinition);
+    }
 }
