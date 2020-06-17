@@ -14,4 +14,13 @@ public class Test {
   public Test() {
     System.out.println("触发test无参构造");
   }
+
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 }
