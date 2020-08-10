@@ -14,25 +14,27 @@ import java.util.HashSet;
  */
 public class JedisSentinelTest {
     public static void main(String[] args) {
+        //连接池配置
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(2000);
         jedisPoolConfig.setMaxIdle(1000);
         jedisPoolConfig.setMinIdle(5);
+        //master名称
         String masterName = "mymaster";
+        //哨兵
         HashSet<String> hashSet = new HashSet<>();
-        hashSet.add(new HostAndPort("192.168.2.123", 26379).toString());
-        hashSet.add(new HostAndPort("192.168.2.123", 26380).toString());
-        hashSet.add(new HostAndPort("192.168.2.123", 26381).toString());
+        hashSet.add(new HostAndPort("192.168.150.100", 26379).toString());
+        hashSet.add(new HostAndPort("192.168.150.100", 26380).toString());
+        hashSet.add(new HostAndPort("192.168.150.100", 26381).toString());
+        //创建连接池
         JedisSentinelPool jedisSentinelPool = new JedisSentinelPool(masterName, hashSet, jedisPoolConfig, 3000, null);
         Jedis jedis = null;
-
-        int i = 6001;
+        int i = 1;
         while (true) {
             try {
                 jedis = jedisSentinelPool.getResource();
                 jedis.set("sentinel" + i, "sentinel" + i);
                 System.out.println("sentinel" + i);
-//                System.out.println(jedis.get("sentinel"));
                 i++;
                 Thread.sleep(3000);
             } catch (Exception e) {
