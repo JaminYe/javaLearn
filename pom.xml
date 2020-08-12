@@ -14,6 +14,7 @@
         <module>spring</module>
         <module>spring-redis</module>
         <module>dubbo</module>
+        <module>dubbo-base</module>
     </modules>
 
     <name>javaLearn</name>
