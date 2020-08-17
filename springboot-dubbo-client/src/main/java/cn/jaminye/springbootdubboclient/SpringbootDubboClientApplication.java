@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 @EnableDubbo
 @SpringBootApplication
 public class SpringbootDubboClientApplication {
-    @Reference(url = "dubbo://192.168.21.1:20881/cn.jaminye.base.UserService")
+    @Reference
     UserService userService;
 
     public static void main(String[] args) {

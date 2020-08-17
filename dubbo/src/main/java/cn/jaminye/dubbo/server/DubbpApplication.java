@@ -19,12 +19,13 @@ public class DubbpApplication {
         //应用名称
         ApplicationConfig applicationConfig = new ApplicationConfig("server");
         // 注册中心  RegistryConfig.NO_AVAILABLE
-        RegistryConfig registryConfig = new RegistryConfig("multicast://224.5.6.7:1234?unicast=false");
+        RegistryConfig registryConfig = new RegistryConfig("zookeeper://127.0.0.1:2181");
         //协议 端口号
         ProtocolConfig protocolConfig = new ProtocolConfig("dubbo", -1);
         ServiceConfig serviceConfig = new ServiceConfig();
         serviceConfig.setInterface(UserService.class);
         serviceConfig.setRef(new UserServiceImpl());
+        serviceConfig.setGroup("jamin");
         serviceConfig.setApplication(applicationConfig);
         serviceConfig.setProtocol(protocolConfig);
         serviceConfig.setRegistry(registryConfig);
