@@ -14,12 +14,22 @@ import java.lang.management.ManagementFactory;
 @Service
 @Component
 public class UserServiceImpl implements UserService {
-    @Override
-    public User getName(String id) {
-        User user = new User();
-        user.setId(id);
-        user.setName(ManagementFactory.getRuntimeMXBean().getName());
-        user.setSex("man");
-        return user;
-    }
+	@Override
+	public User getUser() {
+		return null;
+	}
+
+	@Override
+	public User getName(String id) {
+		User user = new User();
+		user.setId(id);
+		user.setName(ManagementFactory.getRuntimeMXBean().getName());
+		user.setSex("man");
+		return user;
+	}
+
+	@Override
+	public User getByName(String name, String sex) {
+		return null;
+	}
 }
