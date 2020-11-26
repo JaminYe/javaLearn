@@ -2,6 +2,7 @@ package cn.jaminye.zklock.util;
 
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,9 +17,9 @@ import java.util.stream.Collectors;
  * @date 2020/11/18 16:13
  */
 public class ZookeeperLock implements Lock {
+	static CountDownLatch countDownLatch = new CountDownLatch(1);
 	private final String zkServer = "192.168.150.120:2181";
 	private final String ROOT_PATH = "/lock";
-	CountDownLatch countDownLatch = new CountDownLatch(1);
 	private ZkClient zkClient;
 	private volatile String beforeNodePath;
 	private volatile String path;
@@ -28,20 +29,6 @@ public class ZookeeperLock implements Lock {
 		buildRoot();
 	}
 
-	public static void main(String[] args) {
-		ZookeeperLock lock = new ZookeeperLock();
-		for (int i = 0; i < 10; i++) {
-			new Thread(() -> {
-				lock.tryLock();
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				lock.unlock();
-			}).start();
-		}
-	}
 
 	/**
 	 * @param
@@ -57,6 +44,7 @@ public class ZookeeperLock implements Lock {
 	@Override
 	public void lock() {
 		if (tryLock()) {
+			System.out.println(path);
 			System.out.println("获得锁");
 		} else {
 			waitForLock();
@@ -71,15 +59,17 @@ public class ZookeeperLock implements Lock {
 
 	@Override
 	public synchronized boolean tryLock() {
-		path = zkClient.createEphemeralSequential(ROOT_PATH + "/", "lock");
+		if (StringUtils.isBlank(path)) {
+			path = zkClient.createEphemeralSequential(ROOT_PATH + "/", "lock");
+		}
 		//获取子节点
 		List<String> childrenNodes = zkClient.getChildren(ROOT_PATH).stream().sorted().collect(Collectors.toList());
-		if (path.equals(childrenNodes.get(0))) {
+		if (path.equals(ROOT_PATH + "/" + childrenNodes.get(0))) {
 			return true;
 		} else {
 			//监听前一个
 			int i = Collections.binarySearch(childrenNodes, path.substring(ROOT_PATH.length() + 1));
-			beforeNodePath = childrenNodes.get(i - 1);
+			beforeNodePath = ROOT_PATH + "/" + childrenNodes.get(i - 1);
 		}
 		return false;
 	}
@@ -97,11 +87,13 @@ public class ZookeeperLock implements Lock {
 			}
 		};
 		zkClient.subscribeDataChanges(beforeNodePath, iZkDataListener);
-		try {
-			System.out.println("等待");
-			countDownLatch.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		if (zkClient.exists(beforeNodePath)) {
+			try {
+				System.out.println("等待");
+				countDownLatch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		zkClient.unsubscribeDataChanges(beforeNodePath, iZkDataListener);
 	}
