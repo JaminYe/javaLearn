@@ -1,0 +1,12 @@
+spring:
+  kafka:
+    bootstrap-servers: 10.211.55.4:9092
+    producer:
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: mygroup
+      enable-auto-commit: true
