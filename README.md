@@ -26,3 +26,12 @@ springboot redis哨兵架构 集群架构
 #### dubbo-base
 dubbo服务使用的基础接口与实体类
 
+### websocket
+基础的websocket项目
+
+### axis2
+websocket的延伸   相关axis2的官网项目
+
+
+### any
+杂乱

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+  Created by IntelliJ IDEA.
+  User: Jamin
+  Date: 2020/12/30
+  Time: 14:19
+  Desc: 
+  -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<textarea id="content" rows="20" cols="40"></textarea><br/>
+<input type="text"><br>
+<button>发送</button>
+</body>
+<script>
+    var content = document.getElementById("content");
+    var sendInput = document.getElementsByTagName("input")[0];
+    var btn = document.getElementsByTagName("button")[0];
+    var ws = null;
+    if ('WebSocket' in window) {
+        ws = new WebSocket("ws://localhost:8080/webSoket");
+    } else {
+        alert("浏览器不支持");
+    }
+    ws.open = function () {
+        content.text = "成功连接服务器";
+    }
+    ws.onclose = function () {
+        content.text = "连接失败";
+    }
+    ws.onmessage = function (event) {
+        debugger
+        console.log(event);
+        content.innerHTML += "\n" + event.data;
+    }
+    btn.onclick = function () {
+        debugger
+        var message = sendInput.value;
+        if (message != "") {
+            ws.send(message);
+        }
+    }
+    window.onclose = function () {
+        ws.close();
+    }
+
+
+</script>
+</html>
