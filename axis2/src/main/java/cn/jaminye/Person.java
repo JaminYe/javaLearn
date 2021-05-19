@@ -1,10 +1,12 @@
 package cn.jaminye;
 
+import java.io.Serializable;
+
 /**
  * @author Jamin
  * @date 2021/1/19 21:52
  */
-public class Person {
+public class Person implements Serializable {
 	/**
 	 * id
 	 */

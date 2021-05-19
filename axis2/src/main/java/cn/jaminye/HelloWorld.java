@@ -1,5 +1,8 @@
 package cn.jaminye;
 
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.context.ServiceGroupContext;
+
 import javax.jws.WebParam;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -106,6 +109,39 @@ public class HelloWorld {
 		Person person = new Person("1", "测试", "13");
 		oos.writeObject(person);
 		return bos.toByteArray();
+	}
+
+	/**
+	 * 获取登陆信息
+	 *
+	 * @param
+	 * @return {@link String}
+	 * @author Jamin
+	 * @date 2021/1/27 9:58
+	 */
+	public String getUserName() {
+		ServiceGroupContext serviceGroupContext = MessageContext.getCurrentMessageContext().getServiceGroupContext();
+		Object userName = serviceGroupContext.getProperty("userName");
+		if (userName != null) {
+			return userName.toString();
+		} else {
+			return "";
+		}
+	}
+
+	/**
+	 * 异步调用
+	 *
+	 * @param
+	 * @return {@link String}
+	 * @author Jamin
+	 * @date 2021/1/29 9:27
+	 */
+	public String asynchronousCall() throws InterruptedException {
+		System.out.println("======>进入方法");
+		Thread.sleep(10000);
+		System.out.println("=====>结束方法");
+		return "end";
 	}
 
 
