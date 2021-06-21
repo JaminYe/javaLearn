@@ -1,6 +1,5 @@
 package cn.jaminye.springcloudribbonserver.service;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,12 +14,12 @@ public class TestService {
 	@Resource
 	RestTemplate restTemplate;
 
-	@HystrixCommand(fallbackMethod = "hiError")
+	// @HystrixCommand(fallbackMethod = "hiError")
 	public String test(String message) {
 		return restTemplate.getForObject("http://springcloud-eureka/hi?message=" + message, String.class);
 	}
 
-	public String hiError(String message) {
-		return "==========>error";
-	}
+	// public String hiError(String message) {
+	// 	return "==========>error";
+	// }
 }
