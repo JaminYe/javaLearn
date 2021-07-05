@@ -18,6 +18,7 @@
         <module>axis2</module>
         <module>anyone</module>
         <module>axis2_logging</module>
+        <module>rabbitmq</module>
     </modules>
 
     <name>javaLearn</name>
