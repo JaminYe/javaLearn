@@ -19,6 +19,7 @@
         <module>anyone</module>
         <module>axis2_logging</module>
         <module>rabbitmq</module>
+        <module>rabbitmq-base</module>
     </modules>
 
     <name>javaLearn</name>
