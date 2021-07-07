@@ -13,44 +13,15 @@ import java.util.Properties;
  * @date 2021/7/6 21:33
  */
 public class PropertiesUtil {
-	private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 
 	/**
-	 * 根据key读取value
+	 * 文件读取获取Properties
 	 *
 	 * @param filePath
-	 * @param key
-	 * @return
-	 */
-	public static String readValue(String filePath, String key) {
-		Properties prop = new Properties();
-		InputStream in = null;
-		try {
-			in = new BufferedInputStream(new FileInputStream(filePath));
-			if (in != null) {
-				prop.load(in);
-			}
-			return prop.getProperty(key);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return null;
-		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-	}
-
-
-	/**
-	 * 获取配置文件
-	 *
-	 * @param filePath
-	 * @return
+	 * @return {@link Properties}
+	 * @author Jamin
+	 * @date 2021/7/7 15:08
 	 */
 	public static Properties getProperties(String filePath) {
 		Properties prop = new Properties();

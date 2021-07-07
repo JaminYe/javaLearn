@@ -11,15 +11,6 @@
     <modules>
         <module>concurrency</module>
         <module>spring</module>
-        <module>spring-redis</module>
-        <module>dubbo</module>
-        <module>dubbo-base</module>
-        <module>zookeeper_agent</module>
-        <module>axis2</module>
-        <module>anyone</module>
-        <module>axis2_logging</module>
-        <module>rabbitmq</module>
-        <module>rabbitmq-base</module>
     </modules>
 
     <name>javaLearn</name>
