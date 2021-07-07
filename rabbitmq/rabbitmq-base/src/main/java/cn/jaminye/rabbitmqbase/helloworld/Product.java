@@ -30,5 +30,9 @@ public class Product {
 		 * 其他参数
 		 */
 		channel.queueDeclare("测试队列", false, false, false, null);
+		String msg = "测试消息";
+		channel.basicPublish("", "测试队列", null, msg.getBytes());
+		channel.close();
+		connection.close();
 	}
 }
