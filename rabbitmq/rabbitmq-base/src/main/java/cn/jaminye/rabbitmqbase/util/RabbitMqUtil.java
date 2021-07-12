@@ -22,7 +22,7 @@ public class RabbitMqUtil {
 	 */
 	public static Connection getConnection() throws IOException, TimeoutException {
 		//加载配置文件
-		Properties properties = PropertiesUtil.getProperties("config.properties");
+		Properties properties = PropertiesUtil.getProperties("passwd.properties");
 		ConnectionFactory connectionFactory = new ConnectionFactory();
 		//基础信息
 		connectionFactory.setHost(properties.getProperty("rabbitmq.host"));
