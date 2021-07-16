@@ -26,19 +26,37 @@ public class ConfirmProduct {
 		map.put("china.jiangsu.suzhou.weather", "苏州的天气情况");
 		map.put("china.anhui.hefei.news", "合肥的新闻情况");
 		map.put("china.jiangsu.nanjing.news", "南京的新闻情况");
+		//开启监听
 		channel.confirmSelect();
+		/**
+		 * 发送到rabbitmq回调
+		 */
 		channel.addConfirmListener(new ConfirmListener() {
+			/**
+			 * 发送成功回调
+			 * @param deliveryTag
+			 * @param multiple
+			 * @throws IOException
+			 */
 			@Override
 			public void handleAck(long deliveryTag, boolean multiple) throws IOException {
 				System.out.println("发送成功的消息ID========>" + deliveryTag);
 			}
 
+			/**
+			 *发送失败回调
+			 * @param deliveryTag
+			 * @param multiple
+			 * @throws IOException
+			 */
 			@Override
 			public void handleNack(long deliveryTag, boolean multiple) throws IOException {
 				System.out.println("发送失败的消息ID========>" + deliveryTag);
-
 			}
 		});
+		/**
+		 * 发送到队列失败回调
+		 */
 		channel.addReturnListener((replyCode, replyText, exchange, routingKey, properties, body) -> {
 			System.err.println("===========未可达===========>" + new String(body));
 		});
@@ -50,7 +68,6 @@ public class ConfirmProduct {
 				e.printStackTrace();
 			}
 		});
-		//
 		// channel.close();
 		// connection.close();
 		System.out.println("消息发送成功");
