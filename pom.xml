@@ -11,6 +11,7 @@
     <modules>
         <module>concurrency</module>
         <module>spring</module>
+        <module>rabbitmq/rabbitmq-spring-consumer</module>
     </modules>
 
     <name>javaLearn</name>

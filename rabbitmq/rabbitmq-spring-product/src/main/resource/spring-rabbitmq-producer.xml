@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/rabbit
+       http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+    <!--    加载配置文件-->
+    <context:property-placeholder location="classpath:rabbitmq.properties"/>
+
+    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" port="${rabbitmq.port}"
+                               username="${rabbitmq.userName}" password="${rabbitmq.passwd}"
+                               virtual-host="${rabbitmq.vhost}"/>
+    <!--    管理创建交换机-->
+    <rabbit:admin connection-factory="connectionFactory"/>
+    <!--    bean名称   队列名称 是否自动创建-->
+    <rabbit:queue id="spring_queue" name="spring_queue" auto-declare="true"/>
+
+    <!--广播-->
+    <rabbit:queue id="spring_fanout_queue_1" name="spring_fanout_queue_1" auto-declare="true"/>
+    <rabbit:queue id="spring_fanout_queue_2" name="spring_fanout_queue_2" auto-declare="true"/>
+    <!--交换机 bean名称 交换机名称   自动创建-->
+    <rabbit:fanout-exchange id="spring_fanout_exchange" name="spring_fanout_exchange" auto-declare="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="spring_fanout_queue_1"/>
+            <rabbit:binding queue="spring_fanout_queue_2"/>
+        </rabbit:bindings>
+    </rabbit:fanout-exchange>
+    <!--    路由模式-->
+    <rabbit:queue id="spring_direct_queue_1" name="spring_direct_queue_1" auto-declare="true"/>
+    <rabbit:queue id="spring_direct_queue_2" name="spring_direct_queue_2" auto-declare="true"/>
+    <rabbit:direct-exchange id="spring_direct_exchange" name="spring_direct_exchange" auto-declare="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="spring_direct_queue_1" key="key1"/>
+            <rabbit:binding queue="spring_direct_queue_2" key="key2"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+
+    <!--topic模式-->
+    <rabbit:queue id="spring_topic_queue_1" name="spring_topic_queue_1" auto-declare="true"/>
+    <rabbit:queue id="spring_topic_queue_2" name="spring_topic_queue_2" auto-declare="true"/>
+    <rabbit:queue id="spring_topic_queue_3" name="spring_topic_queue_3" auto-declare="true"/>
+    <rabbit:topic-exchange name="spring_topic_exchange">
+        <rabbit:bindings>
+            <rabbit:binding pattern="#.weather" queue="spring_topic_queue_1"/>
+            <rabbit:binding pattern="china.anhui.hefei.*" queue="spring_topic_queue_2"/>
+            <rabbit:binding pattern="ah.hefei.*" queue="spring_topic_queue_3"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+
+    <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"/>
+</beans>

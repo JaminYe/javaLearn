@@ -6,6 +6,7 @@ import com.rabbitmq.client.Connection;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -18,7 +19,7 @@ public class TopicProduct {
         Channel channel = connection.createChannel();
         //创建一个交换机topic模式
         // channel.exchangeDeclare("topic交换机", BuiltinExchangeType.TOPIC);
-        HashMap<String, String> map = new HashMap<String, String>(12);
+        Map<String, String> map = new HashMap<String, String>(12);
         map.put("china.anhui.hefei.weather","合肥的天气情况");
         map.put("china.anhui.wuhu.weather","芜湖的天气情况");
         map.put("china.jiangsu.nanjing.weather","南京的天气情况");
