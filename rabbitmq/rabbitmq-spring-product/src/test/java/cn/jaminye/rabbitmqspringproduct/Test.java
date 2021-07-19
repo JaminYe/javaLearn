@@ -35,7 +35,17 @@ public class Test {
 			//回退原因
 			System.out.println(returnedMessage.getReplyText());
 		});
-		rabbitTemplate.convertAndSend("confirm_exchange", "key1", "消息可靠性质");
+		rabbitTemplate.convertAndSend("confirm_exchange", "key", "消息可靠性质");
 		Thread.sleep(10000L);
+	}
+
+	@org.junit.Test
+	public void testAck() throws InterruptedException {
+		rabbitTemplate.convertAndSend("ack_exchange", "key", "消息者确认");
+	}
+
+	@org.junit.Test
+	public void testTtl() throws InterruptedException {
+		rabbitTemplate.convertAndSend("ttl_exchange", "ttl.1", "队列自动删除");
 	}
 }

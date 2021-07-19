@@ -64,4 +64,25 @@
         </rabbit:bindings>
     </rabbit:direct-exchange>
 
+    <!--消费者确认-->
+    <rabbit:queue id="ack_queue" name="ack_queue" auto-declare="true"/>
+    <rabbit:direct-exchange name="ack_exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="ack_queue" key="key"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!--自动删除-->
+    <rabbit:queue id="ttl_queue" name="ttl_queue" auto-declare="true">
+        <rabbit:queue-arguments>
+            <entry key="x-message-ttl" value="100000" value-type="java.lang.Integer"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+    <rabbit:topic-exchange name="ttl_exchange">
+        <rabbit:bindings>
+            <rabbit:binding pattern="ttl.*" queue="ttl_queue"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+
 </beans>
