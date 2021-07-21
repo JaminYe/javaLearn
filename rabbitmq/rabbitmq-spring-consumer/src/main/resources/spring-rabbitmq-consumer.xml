@@ -11,14 +11,13 @@
        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
     <!--    加载配置文件-->
     <context:property-placeholder location="classpath:rabbitmq.properties"/>
-
+    <!--    连接管理器-->
     <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" port="${rabbitmq.port}"
                                username="${rabbitmq.userName}" password="${rabbitmq.passwd}"
                                virtual-host="${rabbitmq.vhost}"/>
     <!--     注入一个监听器-->
     <bean id="springQueueListener1" class="cn.jaminye.SpringQueueListener1"/>
     <bean id="springQueueListener2" class="cn.jaminye.SpringQueueListener2"/>
-
     <bean id="fanoutListener1" class="cn.jaminye.FanoutListener1"/>
     <bean id="fanoutListener2" class="cn.jaminye.FanoutListener2"/>
     <bean id="directListener1" class="cn.jaminye.DirectListener1"/>
@@ -30,7 +29,6 @@
         <!--        指定监听器与队列的名称-->
         <rabbit:listener ref="springQueueListener1" queue-names="spring_queue"/>
         <rabbit:listener ref="springQueueListener2" queue-names="spring_queue"/>
-
         <rabbit:listener ref="fanoutListener1" queue-names="spring_fanout_queue_1"/>
         <rabbit:listener ref="fanoutListener2" queue-names="spring_fanout_queue_2"/>
         <rabbit:listener ref="directListener1" queue-names="spring_direct_queue_1"/>
