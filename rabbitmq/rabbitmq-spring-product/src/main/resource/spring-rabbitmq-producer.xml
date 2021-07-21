@@ -11,9 +11,10 @@
        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
     <!--    加载配置文件-->
     <context:property-placeholder location="classpath:rabbitmq.properties"/>
+    <!--  confirm-type 三种 none  CORRELATED simple(结合waitForConfirms限制时间) -->
     <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" port="${rabbitmq.port}"
                                username="${rabbitmq.userName}" password="${rabbitmq.passwd}"
-                               virtual-host="${rabbitmq.vhost}"/>
+                               virtual-host="${rabbitmq.vhost}" confirm-type="CORRELATED"/>
     <!--    管理创建交换机-->
     <rabbit:admin connection-factory="connectionFactory"/>
     <!--    bean名称   队列名称 是否自动创建-->
@@ -50,4 +51,34 @@
     </rabbit:topic-exchange>
     <!--定义rabbitTemplate对象操作可以在代码中方便发送消息-->
     <rabbit:template id="rabbitTemplate" connection-factory="connectionFactory"/>
+
+    <!--    消息可靠性测试-->
+    <rabbit:queue id="confirm_one" name="confirm_one" auto-declare="true"/>
+    <rabbit:direct-exchange name="confirm_exchange">
+        <rabbit:bindings>
+            <rabbit:binding key="key" queue="confirm_one"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!--消费者确认-->
+    <rabbit:queue id="ack_queue" name="ack_queue" auto-declare="true"/>
+    <rabbit:direct-exchange name="ack_exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="ack_queue" key="key"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <!--自动删除-->
+    <rabbit:queue id="ttl_queue" name="ttl_queue" auto-declare="true">
+        <rabbit:queue-arguments>
+            <entry key="x-message-ttl" value="100000" value-type="java.lang.Integer"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+    <rabbit:topic-exchange name="ttl_exchange">
+        <rabbit:bindings>
+            <rabbit:binding pattern="ttl.*" queue="ttl_queue"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+
 </beans>

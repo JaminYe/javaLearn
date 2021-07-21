@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
     <!--    加载配置文件-->
     <context:property-placeholder location="classpath:rabbitmq.properties"/>
-    <!--    连接管理器-->
+
     <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" port="${rabbitmq.port}"
                                username="${rabbitmq.userName}" password="${rabbitmq.passwd}"
                                virtual-host="${rabbitmq.vhost}"/>
@@ -35,5 +35,9 @@
         <rabbit:listener ref="directListener2" queue-names="spring_direct_queue_2"/>
         <rabbit:listener ref="topicListener1" queue-names="spring_topic_queue_1"/>
         <rabbit:listener ref="topicListener2" queue-names="spring_topic_queue_2"/>
+    </rabbit:listener-container>
+    <!--  acknowledge none不需要确认 manual手动确认 auto自动   prefetch一次行缓存多少消息   -->
+    <rabbit:listener-container connection-factory="connectionFactory" acknowledge="manual" prefetch="10">
+        <rabbit:listener ref="ackListener" queue-names="ack_queue"/>
     </rabbit:listener-container>
 </beans>
