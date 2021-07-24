@@ -6,6 +6,8 @@ package cn.jaminye.rabbitmqspringproduct;
  */
 
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -46,6 +48,16 @@ public class Test {
 
 	@org.junit.Test
 	public void testTtl() throws InterruptedException {
-		rabbitTemplate.convertAndSend("ttl_exchange", "ttl.1", "队列自动删除");
+		rabbitTemplate.convertAndSend("ttl_queue", "队列自动删除");
+		MessageProperties messageProperties = new MessageProperties();
+		//设置消息过期时间2秒
+        /*
+        Expiration字段以微秒为单位表示TTL值,且与x-message-ttl具有相同的约束条件.因为Expiration字段必须是
+        字符串类型,borker将只会接收以字符串形式表达的数字
+        当同时指定了queue和message中的TTL值,两者中较小的值将会起作用
+         */
+		messageProperties.setExpiration("10000");
+		Message message = new Message("测试过期消息,2秒内不消费将被删除".getBytes(), messageProperties);
+		rabbitTemplate.convertAndSend("ttl_queue", message);
 	}
 }
