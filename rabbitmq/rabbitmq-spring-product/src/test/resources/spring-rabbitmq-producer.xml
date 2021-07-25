@@ -71,8 +71,10 @@
     <!--自动过期队列-->
     <rabbit:queue id="ttl_queue" name="ttl_queue" auto-declare="true">
         <rabbit:queue-arguments>
-            <!--   设置消息自动删除时间         -->
+            <!-- 时间范围内没有被消费删除时间   消费未确认不会删除       -->
             <entry key="x-message-ttl" value="20000" value-type="java.lang.Integer"/>
+            <!--          时间范围内没有消费者队列自动删除时间-->
+            <!--                        <entry key="x-expires" value="20000" value-type="java.lang.Integer"/>-->
         </rabbit:queue-arguments>
     </rabbit:queue>
     <rabbit:topic-exchange name="ttl_exchange">
@@ -80,6 +82,8 @@
             <rabbit:binding pattern="ttl.*" queue="ttl_queue"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:topic-exchange>
+<!--    springboot方式-->
+<!--    return QueueBuilder.durable("springboot-queue").expires(1).ttl(1).build();-->
 
 
 </beans>

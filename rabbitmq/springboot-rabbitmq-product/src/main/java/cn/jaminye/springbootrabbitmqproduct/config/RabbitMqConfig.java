@@ -46,5 +46,11 @@ public class RabbitMqConfig {
 	public Binding binding(@Autowired Queue queue, @Autowired Exchange exchange) {
 		return BindingBuilder.bind(queue).to(exchange).with("springboot.*").noargs();
 	}
+
+
+	@Bean
+	public Queue queue2() {
+		return QueueBuilder.durable("springboot-queue").expires(1).ttl(1).build();
+	}
 }
 
