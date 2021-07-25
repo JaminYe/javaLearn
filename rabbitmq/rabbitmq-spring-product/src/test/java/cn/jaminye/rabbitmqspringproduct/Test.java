@@ -6,10 +6,7 @@ package cn.jaminye.rabbitmqspringproduct;
  */
 
 import org.junit.runner.RunWith;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -49,12 +46,20 @@ public class Test {
 
 	@org.junit.Test
 	public void testTtl() throws InterruptedException {
-		rabbitTemplate.convertAndSend("ttl_exchange","ttl.1","队列自动删除");
-		rabbitTemplate.convertAndSend("ttl_exchange","ttl.1",message ->{
+		rabbitTemplate.convertAndSend("ttl_exchange", "ttl.1", "队列自动删除");
+		rabbitTemplate.convertAndSend("ttl_exchange", "ttl.1", message -> {
 			//单个消息设置过期时间      到时间不会被删除在消费时判断过期不会返回会删除
 			message.getMessageProperties().setExpiration("10000");
 			return message;
-		} );
+		});
+	}
+
+
+	@org.junit.Test
+	public void testDxl() {
+		for (int i = 0; i < 20; i++) {
+			rabbitTemplate.convertAndSend("test_exchange_dlx", "test.dlx.1", "死信队列");
+		}
 	}
 
 }

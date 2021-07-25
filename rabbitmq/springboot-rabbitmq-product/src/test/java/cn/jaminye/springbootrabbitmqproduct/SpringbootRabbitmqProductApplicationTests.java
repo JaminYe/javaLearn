@@ -14,7 +14,7 @@ class SpringbootRabbitmqProductApplicationTests {
 	@Test
 	void contextLoads() throws InterruptedException {
 
-		rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
+		/*rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
 			if (ack) {
 				System.out.println("消息到达");
 			} else {
@@ -30,6 +30,9 @@ class SpringbootRabbitmqProductApplicationTests {
 			System.out.println(returnedMessage.getReplyText());
 		});
 		rabbitTemplate.convertAndSend("springboot-exchange", "springboot.1.12211212", "springboot消息");
-		Thread.sleep(10000);
+		Thread.sleep(10000);*/
+		for (int i = 0; i < 20; i++) {
+			rabbitTemplate.convertAndSend("test_exchange_dlx0", "test.dlx.1", "死信队列");
+		}
 	}
 }

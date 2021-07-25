@@ -82,8 +82,44 @@
             <rabbit:binding pattern="ttl.*" queue="ttl_queue"></rabbit:binding>
         </rabbit:bindings>
     </rabbit:topic-exchange>
-<!--    springboot方式-->
-<!--    return QueueBuilder.durable("springboot-queue").expires(1).ttl(1).build();-->
+    <!--    springboot方式-->
+    <!--    return QueueBuilder.durable("springboot-queue").expires(1).ttl(1).build();-->
 
+    <!---*********************************死信队列开始*********************************************-->
+    <!--    正常队列-->
+    <rabbit:queue name="test_queue_dlx" id="test_queue_dlx">
+        <rabbit:queue-arguments>
+            <!--            指定死信交换机-->
+            <entry key="x-dead-letter-exchange" value="dlx_exchange"/>
+            <!--            指定死信队列路由key-->
+            <!--            <entry key="x-dead-letter-routing-key" value="dlx.hehe"/>-->
+            <!--            超时时间-->
+            <entry key="x-message-ttl" value="10000" value-type="java.lang.Integer"/>
+            <!--            最大长度-->
+            <entry key="x-max-length" value="10" value-type="java.lang.Integer"/>
+        </rabbit:queue-arguments>
+    </rabbit:queue>
+    <!--    正常交换机-->
+    <rabbit:topic-exchange name="test_exchange_dlx">
+        <rabbit:bindings>
+            <rabbit:binding pattern="test.dlx.#" queue="test_queue_dlx"></rabbit:binding>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+
+    <!--    死信队列-->
+    <rabbit:queue name="dlx_queue" id="dlx_queue"/>
+    <!--    死信队列交换机  交换机类型不限制-->
+    <!--<rabbit:topic-exchange name="dlx_exchange">
+        <rabbit:bindings>
+            <rabbit:binding pattern="dlx.#" queue="dlx_queue"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>-->
+    <rabbit:fanout-exchange name="dlx_exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="dlx_queue"/>
+        </rabbit:bindings>
+    </rabbit:fanout-exchange>
+    <!---*********************************死信队列结束*********************************************-->
 
 </beans>
