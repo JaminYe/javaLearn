@@ -1,4 +1,4 @@
-package cn.jaminye.producer;
+package cn.jaminye.sample.producer;
 
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -25,7 +25,7 @@ public class Producer {
 		Message message = new Message("java-topic", "hello-world".getBytes());
 		SendResult sendResult = product.send(message);
 		/**
-		 * 批量发送 topic必须相同
+		 * 批量发送 topic必须相同  官方示例中小于1m 不能是延迟,事务消息
 		 */
 		/*Message message1 = new Message("batch-topic2", "hello-world1".getBytes());
 		Message message2 = new Message("batch-topic2", "hello-world2".getBytes());
