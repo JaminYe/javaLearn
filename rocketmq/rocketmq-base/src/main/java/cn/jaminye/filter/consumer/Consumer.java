@@ -2,6 +2,7 @@ package cn.jaminye.filter.consumer;
 
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
@@ -22,7 +23,8 @@ public class Consumer {
 	public static void main(String[] args) throws MQClientException, InterruptedException {
 		DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("filter-group");
 		consumer.setNamesrvAddr("192.168.147.134:9876");
-		consumer.subscribe("filter-topic", "TAG1 || TAG2");
+		// consumer.subscribe("filter-topic", "TAG1 || TAG2");
+		consumer.subscribe("filter-topic", MessageSelector.bySql("TAGS IN ('TAG1','TAG2') AND a between 0 and 1 "));
 		consumer.registerMessageListener(new MessageListenerConcurrently() {
 			@Override
 			public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
