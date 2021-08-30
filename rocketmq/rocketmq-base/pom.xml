@@ -31,11 +31,11 @@
             <artifactId>rocketmq-client</artifactId>
             <version>4.7.1</version>
         </dependency>
-       <!-- <dependency>
+        <dependency>
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-acl</artifactId>
             <version>4.7.1</version>
-        </dependency>-->
+        </dependency>
     </dependencies>
 
     <build>
