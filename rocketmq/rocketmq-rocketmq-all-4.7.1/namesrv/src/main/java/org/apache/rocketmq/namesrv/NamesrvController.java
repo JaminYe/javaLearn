@@ -76,14 +76,14 @@ public class NamesrvController {
     public boolean initialize() {
 
         this.kvConfigManager.load();
-
+        //创建netty服务对象
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
 
         this.remotingExecutor =
             Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
-
+        //netty服务对象注入线程池
         this.registerProcessor();
-
+        //心跳扫描 延迟5s
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
             @Override
