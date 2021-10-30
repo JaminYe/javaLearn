@@ -120,3 +120,16 @@ hs_err_pid*
 /rabbitmq/rabbitmq-base/src/main/resources/passwd.properties
 /rabbitmq/rabbitmq-spring-product/src/main/resource/rabbitmq.properties
 /rabbitmq/rabbitmq-spring-consumer/src/main/resource/rabbitmq.properties
+NettySocketioApplicationTests.java
+rabbitmq/rabbitmq-base/target/classes/passwd.properties
+rabbitmq/rabbitmq-spring-consumer/src/main/resources/rabbitmq.properties
+rabbitmq/rabbitmq-spring-consumer/target/classes/rabbitmq.properties
+rabbitmq/rabbitmq-spring-consumer/target/classes/spring-rabbitmq-consumer.xml
+rabbitmq/rabbitmq-spring-product/src/test/resources/rabbitmq.properties
+rabbitmq/rabbitmq-spring-product/target/test-classes/rabbitmq.properties
+rabbitmq/rabbitmq-spring-product/target/test-classes/spring-rabbitmq-producer.xml
+spring/target/classes/applicationContext.xml
+spring/target/classes/cat.properties
+websocket/target/classes/application.properties
+target/classes/templates/index.html
+websocket/target
