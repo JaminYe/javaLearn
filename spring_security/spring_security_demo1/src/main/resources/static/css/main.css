@@ -1,0 +1,14 @@
+.div-margin {
+    margin-left: 20px;
+}
+
+.label-margin {
+    margin-left: 10px;
+}
+
+.input-margin {
+    margin-left: 5px;
+}
+body{
+    background-image: url("/images/bg.jpeg");
+}
