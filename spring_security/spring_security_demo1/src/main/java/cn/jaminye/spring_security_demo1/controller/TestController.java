@@ -1,6 +1,7 @@
 package cn.jaminye.spring_security_demo1.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -13,7 +14,7 @@ public class TestController {
 	public String hello() {
 		return "hello";
 	}
-	@GetMapping("/index")
+	@RequestMapping("/index")
 	public String index(){
 		return "这是首页";
 	}

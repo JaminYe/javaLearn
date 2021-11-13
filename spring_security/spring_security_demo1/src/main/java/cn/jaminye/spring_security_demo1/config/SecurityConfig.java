@@ -43,13 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//登陆页面配置
 				.loginPage("/login.html")
 				//默认与loginPage相同 详情见源码FormLoginConfigurer.init super.init updateAuthenticationDefaults
-				.loginProcessingUrl("/login.do")
+				.loginProcessingUrl("/doLogin")
 				//默认username,password, 详情见源码FormLoginConfigurer的构造函数
 				.usernameParameter("name")
 				.passwordParameter("passwd")
-				//第二个参数不设置默认false,登陆后返回来源页面,第二个参数设置为true同successForwardUrl始终返回设置的页面
-				.defaultSuccessUrl("/index")
-				// .successForwardUrl("/index")
+				//第二个参数不设置默认false,登陆后返回来源页面,第二个参数设置为true同successForwardUrl始终返回设置的页面,
+				// 但是successForwardUrl 是转发,defaultSuccessUrl重定向
+				// .defaultSuccessUrl("/index",true)
+				.successForwardUrl("/index")
 				.permitAll()
 				.and()
 				.csrf().disable();
