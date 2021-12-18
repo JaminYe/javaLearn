@@ -47,10 +47,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//默认username,password, 详情见源码FormLoginConfigurer的构造函数
 				.usernameParameter("name")
 				.passwordParameter("passwd")
+				//上方接口不需要登陆验证
 				//第二个参数不设置默认false,登陆后返回来源页面,第二个参数设置为true同successForwardUrl始终返回设置的页面,
 				// 但是successForwardUrl 是转发,defaultSuccessUrl重定向
 				// .defaultSuccessUrl("/index",true)
 				.successForwardUrl("/index")
+				.permitAll()
+				.and()
+				.logout()
+				//注销登陆的url,默认logout
+				.logoutUrl("/logoutUrl")
+				//与logout类似,可指定请求方式
+				// .logoutRequestMatcher(new AntPathRequestMatcher("/logoutUrl", "POST"))
+				// 注销成功后跳转地址
+				.logoutSuccessUrl("/index")
+				//清楚cookie
+				.deleteCookies()
+				//清除cookie和使session失效,默认就会执行
+				.clearAuthentication(true)
+				.invalidateHttpSession(true)
 				.permitAll()
 				.and()
 				.csrf().disable();
