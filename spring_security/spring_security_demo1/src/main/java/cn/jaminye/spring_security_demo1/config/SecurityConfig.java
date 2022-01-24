@@ -1,13 +1,22 @@
 package cn.jaminye.spring_security_demo1.config;
 
+import cn.jaminye.spring_security_demo1.filter.LoginFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jaminye
@@ -69,5 +78,53 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 				.and()
 				.csrf().disable();
+		http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+	}
+
+
+	@Bean
+	LoginFilter loginFilter() throws Exception {
+		LoginFilter loginFilter = new LoginFilter();
+		loginFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
+			response.setContentType("application/json; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			User user = (User) authentication.getPrincipal();
+			Map<String, Object> result = new HashMap<>(8);
+			result.put("code", 0);
+			result.put("msg", user.getUsername() + "登陆成功");
+			out.write(new ObjectMapper().writeValueAsString(result));
+			out.flush();
+			out.close();
+		});
+		loginFilter.setAuthenticationFailureHandler((request, response, exception) -> {
+			response.setContentType("application/json; charset=UTF-8");
+			PrintWriter out = response.getWriter();
+			Map<String, Object> result = new HashMap<>(8);
+			if (exception instanceof LockedException) {
+				result.put("code", 100);
+				result.put("msg", "账户被锁");
+			} else if (exception instanceof CredentialsExpiredException) {
+				result.put("code", 200);
+				result.put("msg", "密码过期");
+			} else if (exception instanceof AccountExpiredException) {
+				result.put("code", 300);
+				result.put("msg", "账户过期");
+			} else if (exception instanceof DisabledException) {
+				result.put("code", 400);
+				result.put("msg", "账户禁用");
+			} else if (exception instanceof BadCredentialsException) {
+				result.put("code", 500);
+				result.put("msg", "用户密码错误");
+			} else {
+				result.put("code", 600);
+				result.put("msg", "登陆失败");
+			}
+			out.write(new ObjectMapper().writeValueAsString(result));
+			out.flush();
+			out.close();
+		});
+		loginFilter.setAuthenticationManager(authenticationManagerBean());
+		loginFilter.setFilterProcessesUrl("/doLogin");
+		return loginFilter;
 	}
 }

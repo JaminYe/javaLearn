@@ -3,27 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link href="css/main.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<form action="/doLogin" method="post">
+<form id="form1">
     <div class="div-margin">
         <label for="name">用户名</label>
-        <input type="text" name="name" id="name"/>
+        <input id="name" name="name" type="text"/>
     </div>
     <div>
         <label class="label-margin" for="pass">密码</label>
-        <input class="input-margin" type="password" name="passwd" id="pass"/>
-    </div>
-    <div>
-        <button type="submit">
-            <span>登陆</span>
-        </button>
+        <input class="input-margin" id="pass" name="passwd" type="password"/>
     </div>
 </form>
 <div>
-    <input type="button" onclick="window.location.href='/logoutUrl'" value="注销">
+    <button id="login">
+        <span>登陆</span>
+    </button>
+</div>
+<div>
+    <input onclick="window.location.href='/logoutUrl'" type="button" value="注销">
 </div>
 </body>
+<script src="js/jquery-3.6.0.min.js"></script>
 <script src="js/main.js"></script>
+<script>
+    $(function () {
+        $("#login").click(function () {
+            $.ajax('/doLogin', {
+                type: 'post',
+                dataType: 'json',
+                data: $('#form1').serialize(),
+                contentType: 'application/json',
+                success: function (res) {
+                    alert(JSON.stringify(res));
+                }
+            })
+            return false;
+        })
+    })
+</script>
 </html>
