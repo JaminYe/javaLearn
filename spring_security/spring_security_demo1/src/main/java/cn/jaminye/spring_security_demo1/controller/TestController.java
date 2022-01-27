@@ -14,8 +14,19 @@ public class TestController {
 	public String hello() {
 		return "hello";
 	}
+
 	@RequestMapping("/index")
-	public String index(){
+	public String index() {
 		return "这是首页";
+	}
+
+	@GetMapping("/admin/hello")
+	public String admin() {
+		return "admin";
+	}
+
+	@GetMapping("/user/hello")
+	public String user() {
+		return "user";
 	}
 }

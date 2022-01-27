@@ -21,12 +21,19 @@ import java.util.Objects;
  * 自定义验证器
  */
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+
+	public LoginFilter() {
+		this.setUsernameParameter("name");
+		this.setPasswordParameter("passwd");
+	}
+
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		// 校验请求方式
 		if (!"POST".equals(request.getMethod())) {
 			throw new AuthenticationServiceException("method is not supported");
 		}
+		//json格式
 		if (request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)) {
 			//存储登陆信息
 			Map<String, String> loginData = new HashMap<>(8);
@@ -52,15 +59,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		} else {
 			return super.attemptAuthentication(request, response);
 		}
-	}
-
-	@Override
-	public void setUsernameParameter(String usernameParameter) {
-		super.setUsernameParameter("username");
-	}
-
-	@Override
-	public void setPasswordParameter(String passwordParameter) {
-		super.setPasswordParameter("passwd");
 	}
 }

@@ -43,10 +43,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/js/**", "/css/**", "/images/**");
 	}
 
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		//指定登陆页面
-		http.authorizeRequests().anyRequest().authenticated()
+		http.authorizeRequests()
+				//有先后顺序
+				.antMatchers("/admin/**").hasRole("admin")
+				.antMatchers("/user/**").hasRole("user")
+				.anyRequest().authenticated()
 				.and()
 				.formLogin()
 				//登陆页面配置
@@ -54,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//默认与loginPage相同 详情见源码FormLoginConfigurer.init super.init updateAuthenticationDefaults
 				.loginProcessingUrl("/doLogin")
 				//默认username,password, 详情见源码FormLoginConfigurer的构造函数
+				// 自定义这里没用了
 				.usernameParameter("name")
 				.passwordParameter("passwd")
 				//上方接口不需要登陆验证
@@ -78,6 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 				.and()
 				.csrf().disable();
+		//添加过滤器
 		http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
@@ -85,6 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	LoginFilter loginFilter() throws Exception {
 		LoginFilter loginFilter = new LoginFilter();
+		//成功
 		loginFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
 			response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
@@ -92,10 +100,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			Map<String, Object> result = new HashMap<>(8);
 			result.put("code", 0);
 			result.put("msg", user.getUsername() + "登陆成功");
+			result.put("data", user.getAuthorities());
 			out.write(new ObjectMapper().writeValueAsString(result));
 			out.flush();
 			out.close();
 		});
+		//失败根据异常返回
 		loginFilter.setAuthenticationFailureHandler((request, response, exception) -> {
 			response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
@@ -127,4 +137,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		loginFilter.setFilterProcessesUrl("/doLogin");
 		return loginFilter;
 	}
+
+
 }

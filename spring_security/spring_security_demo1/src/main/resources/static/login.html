@@ -33,8 +33,7 @@
             $.ajax('/doLogin', {
                 type: 'post',
                 dataType: 'json',
-                data: $('#form1').serialize(),
-                contentType: 'application/json',
+                data: $("#form1").serialize(),
                 success: function (res) {
                     alert(JSON.stringify(res));
                 }
