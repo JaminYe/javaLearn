@@ -1,19 +1,24 @@
 package cn.jaminye.spring_security_demo1.config;
 
+import cn.jaminye.spring_security_demo1.entity.User;
 import cn.jaminye.spring_security_demo1.filter.LoginFilter;
+import cn.jaminye.spring_security_demo1.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,18 +29,46 @@ import java.util.Map;
  */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+	@Resource
+	DataSource dataSource;
+	@Resource
+	UserService userService;
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		//不加密
 		return NoOpPasswordEncoder.getInstance();
 	}
 
+
+	//配置用户密码角色 两种方法
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		//两个用户,中间使用and相连
-		auth.inMemoryAuthentication().withUser("jaminye").password("123456").roles("admin")
-				.and().withUser("user").password("12354").roles("user");
+		// auth.inMemoryAuthentication().withUser("jaminye").password("123456").roles("admin")
+		// 		.and().withUser("user").password("12354").roles("user");
+		auth.userDetailsService(userService);
 	}
+
+	/*@Override
+	@Bean
+	protected UserDetailsService userDetailsService() {
+		// 内存
+		*//*InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+		manager.createUser(User.withUsername("jaminye").password("123456").roles("admin").build());
+		manager.createUser(User.withUsername("user").password("12354").roles("user").build());
+		return manager;*//*
+		JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+		//初始化数据
+		if (!manager.userExists("jaminye")) {
+			manager.createUser(User.withUsername("jaminye").password("123456").roles("admin").build());
+		}
+		if (!manager.userExists("user")) {
+			manager.createUser(User.withUsername("user").password("12354").roles("user").build());
+		}
+		return manager;
+	}*/
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -96,6 +129,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		loginFilter.setAuthenticationSuccessHandler((request, response, authentication) -> {
 			response.setContentType("application/json; charset=UTF-8");
 			PrintWriter out = response.getWriter();
+			// User user = (User) authentication.getPrincipal();
 			User user = (User) authentication.getPrincipal();
 			Map<String, Object> result = new HashMap<>(8);
 			result.put("code", 0);
@@ -138,5 +172,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return loginFilter;
 	}
 
+	@Bean
+	RoleHierarchy roleHierarchy() {
+		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+		//admin继承user的权限
+		roleHierarchy.setHierarchy("ROLE_admin > ROLE_user");
+		return roleHierarchy;
+	}
 
 }
