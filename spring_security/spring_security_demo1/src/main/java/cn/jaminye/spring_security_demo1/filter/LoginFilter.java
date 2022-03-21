@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,5 +60,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		} else {
 			return super.attemptAuthentication(request, response);
 		}
+	}
+
+
+	@Override
+	public RememberMeServices getRememberMeServices() {
+		return super.getRememberMeServices();
+	}
+
+	@Override
+	public void setRememberMeServices(RememberMeServices rememberMeServices) {
+		super.setRememberMeServices(rememberMeServices);
 	}
 }
