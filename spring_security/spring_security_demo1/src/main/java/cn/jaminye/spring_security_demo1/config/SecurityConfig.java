@@ -102,6 +102,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.successForwardUrl("/index")
 				.permitAll()
 				.and()
+				// .rememberMe()
+				// .rememberMeParameter("remember").key("test")
+				// .and()
 				.logout()
 				//注销登陆的url,默认logout
 				.logoutUrl("/logoutUrl")
