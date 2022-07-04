@@ -20,6 +20,11 @@ import java.util.*;
  */
 public class App {
     public static void main(String[] args) throws IOException {
+        // <dependency>-->
+        //     <groupId>org.elasticsearch.client</groupId>-->
+        //     <artifactId>elasticsearch-rest-high-level-client</artifactId>-->
+        //     <version>7.17.2</version>-->
+        // </dependency>
         // RestClientBuilder restClientBuilder = RestClient.builder(new HttpHost("10.211.55.26", 9200, "http"),
         //         new HttpHost("10.211.55.29", 9200, "http"),
         //         new HttpHost("10.211.55.30", 9200, "http"));
@@ -34,6 +39,11 @@ public class App {
         // IndexResponse indexResponse = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
         // System.out.println(indexResponse.getResult());
 
+        // <dependency>
+        //     <groupId>co.elastic.clients</groupId>
+        //     <artifactId>elasticsearch-java</artifactId>
+        //     <version>7.17.2</version>
+        // </dependency>
         RestClient restClient = RestClient.builder(new HttpHost("10.211.55.26", 9200, "http"),
                 new HttpHost("10.211.55.29", 9200, "http"),
                 new HttpHost("10.211.55.30", 9200, "http")).build();
