@@ -1,5 +1,6 @@
 package cn.jaminye.rememberme_simple_demo.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,6 +8,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * @author Jamin
@@ -14,9 +19,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Resource
+	DataSource dataSource;
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
+	}
+
+	@Bean
+	JdbcTokenRepositoryImpl jdbcTokenRepository() {
+		JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+		jdbcTokenRepository.setDataSource(dataSource);
+		return jdbcTokenRepository;
 	}
 
 	@Override
@@ -26,6 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().rememberMe().key("test").and().csrf().disable();
+		http.authorizeRequests()
+				//必须是自动登陆才能访问
+				.antMatchers("/rememberme").rememberMe()
+				//必须是用户名密码才能访问
+				.antMatchers("/admin").fullyAuthenticated()
+				.anyRequest().authenticated()
+				.and().formLogin()
+				.and().rememberMe().key("test").tokenRepository(jdbcTokenRepository()).and().csrf().disable();
 	}
 }
