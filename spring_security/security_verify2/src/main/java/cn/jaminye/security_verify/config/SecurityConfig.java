@@ -1,6 +1,7 @@
 package cn.jaminye.security_verify.config;
 
 import cn.jaminye.security_verify.filter.MyAuthenticationProvider;
+import cn.jaminye.security_verify.filter.MyWebAuthenticationDetailsSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.code.kaptcha.Producer;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
@@ -18,9 +19,11 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import javax.annotation.Resource;
 import java.io.PrintWriter;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -32,8 +35,13 @@ import java.util.Properties;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+	@Resource
+	MyWebAuthenticationDetailsSource myWebAuthenticationDetailsSource;
+
 	/**
 	 * 验证码
+	 *
 	 * @return
 	 */
 	@Bean
@@ -65,10 +73,8 @@ public class SecurityConfig {
 
 
 	@Bean
-	AuthenticationManager authenticationManager() throws Exception {
-		final ProviderManager manager = new ProviderManager(Arrays.asList(this.myAuthenticationProvider()));
-		return manager;
-
+	AuthenticationManager authenticationManager() {
+		return new ProviderManager(Collections.singletonList(this.myAuthenticationProvider()));
 	}
 
 	@Bean
@@ -78,14 +84,26 @@ public class SecurityConfig {
 		return manager;
 	}
 
+	/**
+	 * 默认的失效是通过调用 StandardSession#invalidate 导致 Spring Security无法及时清理会话信息表 以为用户还在线
+	 * bean的作用为将session创建和销毁事件发布出去
+	 */
+	@Bean
+	HttpSessionEventPublisher httpSessionEventPublisher() {
+		return new HttpSessionEventPublisher();
+	}
 
 	@Bean
 	SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
 		return http.authorizeHttpRequests()
 				.antMatchers("/vc.jpg").permitAll()
+				//有先后顺序
+				.antMatchers("/admin/**").hasRole("admin")
+				.antMatchers("/user/**").hasRole("user")
 				.anyRequest().authenticated()
 				.and()
 				.formLogin()
+				.authenticationDetailsSource(this.myWebAuthenticationDetailsSource)
 				.successHandler((req, resp, auth) -> {
 					resp.setContentType("application/json;charset=utf-8");
 					final PrintWriter out = resp.getWriter();
@@ -102,6 +120,10 @@ public class SecurityConfig {
 				})
 				.and()
 				.csrf().disable()
-				.build();
+				.sessionManagement()
+				.maximumSessions(1)
+				.maxSessionsPreventsLogin(true)
+				.and().and().build();
 	}
+
 }
