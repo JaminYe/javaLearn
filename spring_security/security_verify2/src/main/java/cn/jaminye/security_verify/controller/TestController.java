@@ -3,8 +3,7 @@ package cn.jaminye.security_verify.controller;
 import com.google.code.kaptcha.Producer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -36,5 +35,12 @@ public class TestController {
 		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		return authentication.getDetails().toString();
 
+	}
+
+
+	@RequestMapping(value = "/hello/{id}")
+	public void hello(@PathVariable final Integer id, @MatrixVariable final String name) {
+		System.out.println("id = " + id);
+		System.out.println("name = " + name);
 	}
 }
