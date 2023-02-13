@@ -25,7 +25,7 @@ public class SecurityConfig {
 
 		return http.authorizeRequests().anyRequest().authenticated().and().formLogin()
 				.and().sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true)
-				.sessionRegistry(this.sessionRegistry()).and().and().build();
+				.sessionRegistry(this.sessionRegistry()).and().and().csrf().disable().build();
 	}
 
 	@Bean

@@ -1,0 +1,11 @@
+spring:
+  redis:
+    port: 6389
+    password: OmDFuEmD4GTPyF
+    host: tencent
+  security:
+    user:
+      name: jaminye
+      password: 123456
+server:
+  port: 8082
