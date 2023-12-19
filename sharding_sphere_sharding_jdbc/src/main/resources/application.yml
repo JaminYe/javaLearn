@@ -1,0 +1,92 @@
+#spring:
+#  datasource:
+#    druid:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://mysql:3506/sharding_jdbc?serverTimezone=UTC
+#      username: jaminye
+#      password: T!-jJiwGgYcLPf8K
+
+#使用dynamicDatasource框架
+#spring:
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    dynamic:
+#      #设置默认的数据源或者数据源组,read
+#      primary: master
+#      #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+#      strict: false
+#      datasource:
+#        master:
+#          url: jdbc:mysql://mysql:3506/sharding_jdbc1?serverTimezone=UTC
+#          username: jaminye
+#          password: T!-jJiwGgYcLPf8K
+#          driver-class-name: com.mysql.cj.jdbc.Driver
+#        slave:
+#          url: jdbc:mysql://mysql:3506/sharding_jdbc2?serverTimezone=UTC
+#          username: jaminye
+#          password: T!-jJiwGgYcLPf8K
+#          driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 使用 sharding-jdbc-spring-boot-starter
+spring:
+  shardingsphere:
+    rules:
+      sharding:
+        tables:
+          user:
+            table-strategy:
+#              standard:
+#                sharding-algorithm-name: tb_alg
+#                sharding-column: id
+              complex:
+                sharding-columns: id,age
+                sharding-algorithm-name: tb_alg
+            database-strategy:
+              standard:
+                sharding-column: id
+                sharding-algorithm-name: db_alg
+            actual-data-nodes: ds_$->{0..1}.user$->{1..2}
+            key-generate-strategy:
+              key-generator-name: snowflake
+              column: id
+        key-generators:
+          snowflake:
+            type: SNOWFLAKE
+            props:
+              work:
+                id: 1
+        sharding-algorithms:
+          db_alg:
+            type: MOD
+            props:
+              sharding-count: 2
+#          tb_alg:
+#            type: INLINE
+#            props:
+#              algorithm-expression: user$->{(id%4).intdiv(2)+1}
+#              # 允许between 实际是全路由
+#              allow-range-query-with-inline-sharding: true
+          tb_alg:
+            type: COMPLEX_INLINE
+            props:
+#              查询就必须是两个条件一起
+              algorithm-expression: user$->{((id+age)%4).intdiv(2)+1}
+    datasource:
+      names: ds_0,ds_1
+      ds_0:
+        url: jdbc:mysql://mysql:3506/sharding_jdbc1?serverTimezone=UTC
+        username: jaminye
+        password: T!-jJiwGgYcLPf8K
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+      ds_1:
+        url: jdbc:mysql://mysql:3506/sharding_jdbc2?serverTimezone=UTC
+        username: jaminye
+        password: T!-jJiwGgYcLPf8K
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+
+    props:
+      sql-show: true
+  main:
+    allow-bean-definition-overriding: on
