@@ -39,7 +39,7 @@ public class TestConsumer {
 	@SneakyThrows
 	public void consume() {
 		//指定消费主题
-		kafkaConsumer.subscribe(Collections.singletonList("test"));
+		kafkaConsumer.subscribe(Collections.singletonList("test_topic"));
 		while (true) {
 			//每200毫秒拉一下数据
 			ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofMillis(200));

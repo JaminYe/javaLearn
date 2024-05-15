@@ -2,6 +2,7 @@ package cn.jaminye.springboot_kafka;
 
 import cn.jaminye.springboot_kafka.service.TestConsumer;
 import cn.jaminye.springboot_kafka.util.SpringUtils;
+import javafx.application.Application;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.ConfigurableBootstrapContext;
 import org.springframework.boot.SpringApplication;
